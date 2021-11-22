@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        td,th{border:solid 1px #aaaaaa;padding:1px 10px}
+        table{border-collapse:collapse;}
+ 
+    </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="text/JavaScript">     
+        function download(writeString){
+            let bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+            let blob = new Blob([bom, writeString],{type:"application/xml"});
+            let link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'キャラコマ.xml';
+            link.click();
+        }
+
+        
+    var unicodeUnescape = function(str) {
+        var result = '', strs = str.match(/\\u.{4}/ig);
+        if (!strs) return str;
+        for (var i = 0, len = strs.length; i < len; i++) {
+            result += String.fromCharCode(strs[i].replace('\\u', '0x'));
+        }
+        return result;
+    };
+        
+
+    function yomikomi() {
+        var date=document.getElementById("nyuryoku").value
+        var bui=date.match(/\"V_Power_hantei\".*?\]/g)
+        bui=bui[0].match(/\d+/g)
+
+        var buimei=date.match(/Power_name.*?P/g)
+        buimei=buimei[0].replace(/Power_name\":\[/,"").replace(/\]/,"").replace(/\"/g,"").replace(/P/,"")
+        buimei=buimei.match(/\\u[^,]*?,/g)
+        buimei.forEach(function(element,index,array){
+            buimei[index]=buimei[index].replace(/,/,"")
+            buimei[index]=unicodeUnescape(element)
+                })
+
+        var lost=date.match(/Power_Lost.*?\]/g)
+        lost=lost[0].match(/\d+/g)
+
+        var name=date.match(/pc_name.*?,/g)
+        name=name[0].replace(/pc_name\":\"/,"").replace(/\",/,"")
+        name=unicodeUnescape(name)
+
+        var skill=[]
+        var atama=[]
+        var ude=[]
+        var doutai=[]
+        var asi=[]
+        var atamalost=[]
+        var udelost=[]
+        var doutailost=[]
+        var asilost=[]
+
+        for(i=0;i<bui.length;i++){
+            if (bui[i]=="1"||bui[i]=="2"||bui[i]=="3") {
+                skill.push(buimei[i])
+            }
+            if(bui[i]=="4"){
+                atama.push(buimei[i])
+                atamalost.push(lost[i])
+            }
+            if(bui[i]=="5"){
+                ude.push(buimei[i])
+                udelost.push(lost[i])
+            }
+            if(bui[i]=="6"){
+                doutai.push(buimei[i])
+                doutailost.push(lost[i])
+            }
+            if(bui[i]=="7"){
+                asi.push(buimei[i])
+                asilost.push(lost[i])
+            }
+        }
+
+
+        let writeString="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<character>\n  <data name=\"character\">\n    <data name=\"image\">\n      <data type=\"image\" name=\"imageIdentifier\"></data>\n    </data>\n    <data name=\"common\">\n      <data name=\"name\">"+name+"</data>\n      <data name=\"size\">1</data>\n    </data>\n    <data name=\"detail\">\n      <data name=\"頭\">\n"
+        for(i=0;i<atama.length;i++){
+            writeString+="        <data name=\""+atama[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+atamalost[i]+"\">1</data>\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
+        }
+        
+        writeString+="      </data>\n      <data name=\"腕\">\n"
+        for(i=0;i<ude.length;i++){
+            writeString+="        <data name=\""+ude[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+udelost[i]+"\">1</data>\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
+        }
+
+        writeString+="      </data>\n      <data name=\"胴体\">\n"
+        for(i=0;i<doutai.length;i++){
+            writeString+="        <data name=\""+doutai[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+doutailost[i]+"\">1</data>\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
+        }
+
+        writeString+="      </data>\n      <data name=\"脚\">\n"
+        for(i=0;i<asi.length;i++){
+            writeString+="        <data name=\""+asi[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+asilost[i]+"\">1</data>\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
+        }
+
+        writeString+="      </data>\n      <data name=\"スキル\">\n"
+        for(i=0;i<skill.length;i++){
+            writeString+="        <data name=\""+skill[i]+"\" type=\"numberResource\">\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
+        }
+
+        writeString+="      </data>\n    </data>\n  </data>\n  <chat-palette dicebot=\"Nechronica\"></chat-palette>\n  </character>"
+
+         download(writeString)
+
+    }
+    </script>
+</head>
+<body>
+     キャラクターシートのURLの末尾に.jsを付けて開いたページの内容を、全てコピーして下の欄にペーストしてください。  <br>
+     その後、ボタンをクリックするとxmlファイルをダウンロードします。そのファイルをzipファイルに圧縮するとキャラコマができます。
+    <br><textarea id="nyuryoku"  rows="10" cols="30"></textarea>
+    <input type="button" onclick="yomikomi()" value="クリック">
+</body>
+</html>
