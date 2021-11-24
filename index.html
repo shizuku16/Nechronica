@@ -45,10 +45,10 @@
         bui=bui[0].match(/\d+/g)
 
         var buimei=date.match(/Power_name.*?P/g)
-        buimei=buimei[0].replace(/Power_name\":\[/,"").replace(/\]/,"").replace(/\"/g,"").replace(/P/,"")
-        buimei=buimei.match(/\\u[^,]*?,/g)
+        buimei=buimei[0].replace(/Power_name\":\[/,"").replace(/\]/,"").replace(/P/,"")
+        buimei=buimei.match(/\".*?,/g)
         buimei.forEach(function(element,index,array){
-            buimei[index]=buimei[index].replace(/,/,"")
+            buimei[index]=buimei[index].replace(/,/g,"").replace(/\"/g,"")
             buimei[index]=unicodeUnescape(buimei[index])
                 })
 
@@ -78,7 +78,6 @@
             range[index]=range[index].replace(/,/g,"").replace(/\"/g,"")
             range[index]=unicodeUnescape(range[index])
                 })
-        console.log(range)
 
         var memo=date.match(/Power_memo.*?P/g)
         memo=memo[0].replace(/Power_memo\":\[/,"").replace(/\]/,"").replace(/P/,"")
@@ -87,9 +86,7 @@
             memo[index]=memo[index].replace(/,/g,"").replace(/\"/g,"")
             memo[index]=unicodeUnescape(memo[index])
                 })
-        console.log(memo)
 
-        console.log(String.fromCharCode("0x6483123test0x5224"))
 
         
 
@@ -155,7 +152,7 @@
 
         writeString+="      </data>\n    </data>\n  </data>\n  <chat-palette dicebot=\"Nechronica\">1NC　判定\n1NA　攻撃判定\n\n\nマニューバ/タイミング/コスト/射程/効果\n"
         for(i=0;i<memo.length;i++){
-            if(memo[i].match(/^\d$/)){}else if(memo[i].match(/.+/g)){
+            if(memo[i].match(/^\d$/)||memo[i].match(/^最大行動値.{2}/)){}else if(memo[i].match(/.+/g)){
                 writeString+="\n"+buimei[i]+"/"+timinglist[Number(timing[i])]+"/"+cost[i]+"/"+range[i]+"/"+memo[i]
             }
         }
