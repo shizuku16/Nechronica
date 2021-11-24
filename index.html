@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ネクロニカのキャラコマを作る</title>
+    <title>Document</title>
     <script type="text/JavaScript">     
         function download(writeString){
             let bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
@@ -22,12 +22,20 @@
 
         
     var unicodeUnescape = function(str) {
-        var result = '', strs = str.match(/\\u.{4}/ig);
-        if (!strs) return str;
-        for (var i = 0, len = strs.length; i < len; i++) {
-            result += String.fromCharCode(strs[i].replace('\\u', '0x'));
+        str=str.replace(/\\u/g,"0x")
+        var str2=""
+        for(;str.match(/./);){
+            if(str.match(/^0x/)){
+                var str3=str.match(/0x.{4}/g);
+                str2+=String.fromCharCode(str3[0]);
+                str=str.slice(6);
+            }else{
+                var str3=str.match(/.{1}/g);
+                str2+=str3[0];
+                str=str.slice(1);
+            }
         }
-        return result;
+        return str2;
     };
         
 
@@ -41,7 +49,7 @@
         buimei=buimei.match(/\\u[^,]*?,/g)
         buimei.forEach(function(element,index,array){
             buimei[index]=buimei[index].replace(/,/,"")
-            buimei[index]=unicodeUnescape(element)
+            buimei[index]=unicodeUnescape(buimei[index])
                 })
 
         var lost=date.match(/Power_Lost.*?\]/g)
@@ -50,6 +58,40 @@
         var name=date.match(/pc_name.*?,/g)
         name=name[0].replace(/pc_name\":\"/,"").replace(/\",/,"")
         name=unicodeUnescape(name)
+
+        var timing=date.match(/Power_timing.*?V/g)
+        timing=timing[0].match(/\d+/g)
+        timinglist=["オート","アクション","ジャッジ","ダメージ","ラピッド"]
+
+        var cost=date.match(/,\"Power_cost.*?P/g)
+        cost=cost[0].replace(/Power_cost\":\[/,"").replace(/\]/,"").replace(/P/,"")
+        cost=cost.match(/\".*?,/g)
+        cost.forEach(function(element,index,array){
+            cost[index]=cost[index].replace(/,/g,"").replace(/\"/g,"")
+            cost[index]=unicodeUnescape(cost[index])
+                })
+
+        var range=date.match(/Power_range.*?P/g)
+        range=range[0].replace(/Power_range\":\[/,"").replace(/\]/,"").replace(/P/,"")
+        range=range.match(/\".*?,/g)
+        range.forEach(function(element,index,array){
+            range[index]=range[index].replace(/,/g,"").replace(/\"/g,"")
+            range[index]=unicodeUnescape(range[index])
+                })
+        console.log(range)
+
+        var memo=date.match(/Power_memo.*?P/g)
+        memo=memo[0].replace(/Power_memo\":\[/,"").replace(/\]/,"").replace(/P/,"")
+        memo=memo.match(/\".*?,/g)
+        memo.forEach(function(element,index,array){
+            memo[index]=memo[index].replace(/,/g,"").replace(/\"/g,"")
+            memo[index]=unicodeUnescape(memo[index])
+                })
+        console.log(memo)
+
+        console.log(String.fromCharCode("0x6483123test0x5224"))
+
+        
 
         var skill=[]
         var atama=[]
@@ -83,6 +125,8 @@
             }
         }
 
+    
+
 
         let writeString="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<character>\n  <data name=\"character\">\n    <data name=\"image\">\n      <data type=\"image\" name=\"imageIdentifier\"></data>\n    </data>\n    <data name=\"common\">\n      <data name=\"name\">"+name+"</data>\n      <data name=\"size\">1</data>\n    </data>\n    <data name=\"detail\">\n      <data name=\"頭\">\n"
         for(i=0;i<atama.length;i++){
@@ -109,11 +153,20 @@
             writeString+="        <data name=\""+skill[i]+"\" type=\"numberResource\">\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
         }
 
-        writeString+="      </data>\n    </data>\n  </data>\n  <chat-palette dicebot=\"Nechronica\"></chat-palette>\n  </character>"
+        writeString+="      </data>\n    </data>\n  </data>\n  <chat-palette dicebot=\"Nechronica\">1NC　判定\n1NA　攻撃判定\n\n\nマニューバ/タイミング/コスト/射程/効果\n"
+        for(i=0;i<memo.length;i++){
+            if(memo[i].match(/^\d$/)){}else if(memo[i].match(/.+/g)){
+                writeString+="\n"+buimei[i]+"/"+timinglist[Number(timing[i])]+"/"+cost[i]+"/"+range[i]+"/"+memo[i]
+            }
+        }
+            
+        writeString+="</chat-palette>\n  </character>"
+        console.log(writeString)
 
          download(writeString)
 
     }
+
     </script>
 </head>
 <body>
