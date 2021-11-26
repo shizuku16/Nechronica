@@ -143,8 +143,7 @@
 
 
         let writeString="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<character>\n  <data name=\"character\">\n    <data name=\"image\">\n      <data type=\"image\" name=\"imageIdentifier\"></data>\n    </data>\n    <data name=\"common\">\n      <data name=\"name\">"+name+"</data>\n      <data name=\"size\">1</data>\n    </data>\n    <data name=\"detail\">\n"
-        writeString+="      <data name=\"リソース\">\n        <data type=\"numberResource\" currentValue=\"0\" name=\"狂気点回復\">"+kakerakazu.length+"</data>\n"
-        writeString+="        <data name=\"行動値\">"+koudouti+"</data>\n"
+        writeString+="      <data name=\"リソース\">\n        <data name=\"行動値\">"+koudouti+"</data>\n        <data type=\"numberResource\" currentValue=\"0\" name=\"狂気点回復\">"+kakerakazu.length+"</data>\n"
         writeString+="        <data type=\"numberResource\" currentValue=\"200\" name=\"未練\">200\n"
         for(i=0;i<kyouki.length;i++){
             if(kyouki[i]===""){}else{
@@ -196,7 +195,7 @@
 </head>
 <body>
      キャラクターシートのURLの末尾に.jsを付けて開いたページの内容を、全てコピーして下の欄にペーストしてください。  <br>
-     その後、ボタンをクリックするとxmlファイルをダウンロードします。そのファイルをzipファイルに圧縮するとキャラコマができます。
+     その後、ボタンをクリックするとxmlファイルをダウンロードします。xmlファイルをユドナリウムにペーストするとキャラコマができます。
     <br><textarea id="nyuryoku"  rows="10" cols="30"></textarea>
     <input type="button" onclick="yomikomi()" value="クリック">
 </body>
