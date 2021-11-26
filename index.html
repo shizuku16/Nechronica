@@ -46,7 +46,6 @@
             buimei[index]=buimei[index].replace(/,/g,"").replace(/\"/g,"")
             buimei[index]=unicodeUnescape(buimei[index])
                 })
-        console.log(buimei)
 
         var lost=date.match(/Power_Lost.*?\]/g)
         lost=lost[0].match(/\d+/g)
@@ -74,7 +73,6 @@
             range[index]=range[index].replace(/,/g,"").replace(/\"/g,"")
             range[index]=unicodeUnescape(range[index])
                 })
-        console.log(range)
 
         var memo=date.match(/Power_memo.*?P/g)
         memo=memo[0].replace(/Power_memo\":\[/,"").replace(/\]/,"").replace(/P/,"")
@@ -83,10 +81,30 @@
             memo[index]=memo[index].replace(/,/g,"").replace(/\"/g,"")
             memo[index]=unicodeUnescape(memo[index])
                 })
-        console.log(memo)
 
-        console.log(String.fromCharCode("0x6483123test0x5224"))
+        var kyouki=date.match(/,\"roice_name.*?\"sl/g)
+        kyouki=kyouki[0].replace(/\"roice_name\":\[/,"")
+        kyouki=kyouki.match(/\".*?,/g)
+        kyouki.forEach(function(element,index,array){
+            kyouki[index]=kyouki[index].replace(/,/g,"").replace(/\"/g,"").replace(/]/g,"")
+            kyouki[index]=unicodeUnescape(kyouki[index])
+        })
 
+        var kyoukisuu=date.match(/roice_damage.*?r/g)
+        kyoukisuu=kyoukisuu[0].match(/\".*?,/g)
+        console.log(kyoukisuu)
+        kyoukisuu.forEach(function(element,index,array){
+            kyoukisuu[index]=kyoukisuu[index].replace(/,/g,"").replace(/\"/g,"").replace(/:\[/,"").replace(/\]/,"")
+            kyoukisuu[index]=unicodeUnescape(kyoukisuu[index])
+        })
+
+        var kakerakazu=date.match(/kakera_name.*?kakera_memo/g)
+        kakerakazu=kakerakazu[0].match(/,/g)
+
+        var koudouti=date.match(/Act_Total\":\"\d+/g)
+        koudouti=koudouti[0].match(/\d+/g)
+        koudouti=koudouti[0]
+        console.log(koudouti)
         
 
         var skill=[]
@@ -124,9 +142,17 @@
     
 
 
-        let writeString="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<character>\n  <data name=\"character\">\n    <data name=\"image\">\n      <data type=\"image\" name=\"imageIdentifier\"></data>\n    </data>\n    <data name=\"common\">\n      <data name=\"name\">"+name+"</data>\n      <data name=\"size\">1</data>\n    </data>\n    <data name=\"detail\">\n      <data name=\"頭\">\n"
-        writeString+="      <data name=\"リソース\">\n        <data type=\"numberResource\" currentValue=\"0\" name=\"狂気点回復\">2</data>\n      </data>"
+        let writeString="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<character>\n  <data name=\"character\">\n    <data name=\"image\">\n      <data type=\"image\" name=\"imageIdentifier\"></data>\n    </data>\n    <data name=\"common\">\n      <data name=\"name\">"+name+"</data>\n      <data name=\"size\">1</data>\n    </data>\n    <data name=\"detail\">\n"
+        writeString+="      <data name=\"リソース\">\n        <data type=\"numberResource\" currentValue=\"0\" name=\"狂気点回復\">"+kakerakazu.length+"</data>\n"
+        writeString+="        <data name=\"行動値\">"+koudouti+"</data>\n"
+        writeString+="        <data type=\"numberResource\" currentValue=\"200\" name=\"未練\">200\n"
+        for(i=0;i<kyouki.length;i++){
+            if(kyouki[i]===""){}else{
+                writeString+="          <data name=\""+kyouki[i]+"\" type=\"numberResource\" currentValue=\""+kyoukisuu[i]+"\">4</data>\n"
+            }
+        }
         
+        writeString+="        </data>\n      </data>\n      <data name=\"頭\">\n"
             for(i=0;i<atama.length;i++){
             writeString+="        <data name=\""+atama[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+atamalost[i]+"\">1</data>\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
         }
