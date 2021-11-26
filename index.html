@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <style>
-        td,th{border:solid 1px #aaaaaa;padding:1px 10px}
-        table{border-collapse:collapse;}
- 
-    </style>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>ネクロニカのキャラコマを作る</title>
     <script type="text/JavaScript">     
         function download(writeString){
             let bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
@@ -36,8 +31,7 @@
             }
         }
         return str2;
-    };
-        
+    };        
 
     function yomikomi() {
         var date=document.getElementById("nyuryoku").value
@@ -51,6 +45,7 @@
             buimei[index]=buimei[index].replace(/,/g,"").replace(/\"/g,"")
             buimei[index]=unicodeUnescape(buimei[index])
                 })
+        console.log(buimei)
 
         var lost=date.match(/Power_Lost.*?\]/g)
         lost=lost[0].match(/\d+/g)
@@ -78,6 +73,7 @@
             range[index]=range[index].replace(/,/g,"").replace(/\"/g,"")
             range[index]=unicodeUnescape(range[index])
                 })
+        console.log(range)
 
         var memo=date.match(/Power_memo.*?P/g)
         memo=memo[0].replace(/Power_memo\":\[/,"").replace(/\]/,"").replace(/P/,"")
@@ -86,7 +82,9 @@
             memo[index]=memo[index].replace(/,/g,"").replace(/\"/g,"")
             memo[index]=unicodeUnescape(memo[index])
                 })
+        console.log(memo)
 
+        console.log(String.fromCharCode("0x6483123test0x5224"))
 
         
 
@@ -126,9 +124,12 @@
 
 
         let writeString="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<character>\n  <data name=\"character\">\n    <data name=\"image\">\n      <data type=\"image\" name=\"imageIdentifier\"></data>\n    </data>\n    <data name=\"common\">\n      <data name=\"name\">"+name+"</data>\n      <data name=\"size\">1</data>\n    </data>\n    <data name=\"detail\">\n      <data name=\"頭\">\n"
-        for(i=0;i<atama.length;i++){
+        writeString+="      <data name=\"リソース\">\n        <data type=\"numberResource\" currentValue=\"0\" name=\"狂気点回復\">2</data>\n      </data>"
+        
+            for(i=0;i<atama.length;i++){
             writeString+="        <data name=\""+atama[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+atamalost[i]+"\">1</data>\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
         }
+        
         
         writeString+="      </data>\n      <data name=\"腕\">\n"
         for(i=0;i<ude.length;i++){
@@ -158,6 +159,7 @@
         }
             
         writeString+="</chat-palette>\n  </character>"
+        console.log(writeString)
 
          download(writeString)
 
