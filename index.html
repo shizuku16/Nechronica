@@ -116,28 +116,39 @@
         var udelost=[]
         var doutailost=[]
         var asilost=[]
+        var skilltiming=[]
+        var atamatiming=[]
+        var udetiming=[]
+        var doutaitiming=[]
+        var asitiming=[]
 
         for(i=0;i<bui.length;i++){
             if (bui[i]=="1"||bui[i]=="2"||bui[i]=="3") {
                 skill.push(buimei[i])
+                skilltiming.push(timing[i])
             }
             if(bui[i]=="4"){
                 atama.push(buimei[i])
                 atamalost.push(lost[i])
+                atamatiming.push(timing[i])
             }
             if(bui[i]=="5"){
                 ude.push(buimei[i])
                 udelost.push(lost[i])
+                udetiming.push(timing[i])
             }
             if(bui[i]=="6"){
                 doutai.push(buimei[i])
                 doutailost.push(lost[i])
+                doutaitiming.push(timing[i])
             }
             if(bui[i]=="7"){
                 asi.push(buimei[i])
                 asilost.push(lost[i])
+                asitiming.push(timing[i])
             }
         }
+        console.log(udetiming)
 
     
 
@@ -153,28 +164,47 @@
         
         writeString+="        </data>\n      </data>\n      <data name=\"頭\">\n"
             for(i=0;i<atama.length;i++){
-            writeString+="        <data name=\""+atama[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+atamalost[i]+"\">1</data>\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
-        }
+                if(atamatiming[i]<2){
+                    writeString+="        <data name=\""+atama[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+atamalost[i]+"\">1</data>\n        </data>\n"
+                }else{
+                    writeString+="        <data name=\""+atama[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+atamalost[i]+"\">1</data>\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
+                }
+            }
         
         
         writeString+="      </data>\n      <data name=\"腕\">\n"
         for(i=0;i<ude.length;i++){
-            writeString+="        <data name=\""+ude[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+udelost[i]+"\">1</data>\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
+            if(udetiming[i]<2){
+                writeString+="        <data name=\""+ude[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+udelost[i]+"\">1</data>\n        </data>\n"
+            }else{
+                writeString+="        <data name=\""+ude[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+udelost[i]+"\">1</data>\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
+            }
         }
 
         writeString+="      </data>\n      <data name=\"胴体\">\n"
         for(i=0;i<doutai.length;i++){
+            if(doutaitiming[i]<2){
+                writeString+="        <data name=\""+doutai[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+doutailost[i]+"\">1</data>\n        </data>\n"
+            }else{
             writeString+="        <data name=\""+doutai[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+doutailost[i]+"\">1</data>\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
+            }
         }
 
         writeString+="      </data>\n      <data name=\"脚\">\n"
         for(i=0;i<asi.length;i++){
+            if(asitiming[i]<2){
+                writeString+="        <data name=\""+asi[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+asilost[i]+"\">1</data>\n        </data>\n"
+            }else{
             writeString+="        <data name=\""+asi[i]+"\" type=\"numberResource\">\n          <data name=\"損傷\" type=\"numberResource\" currentValue=\""+asilost[i]+"\">1</data>\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
+            }
         }
 
         writeString+="      </data>\n      <data name=\"スキル\">\n"
         for(i=0;i<skill.length;i++){
-            writeString+="        <data name=\""+skill[i]+"\" type=\"numberResource\">\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
+            if(skilltiming[i]<2){
+            }else{
+                writeString+="        <data name=\""+skill[i]+"\" type=\"numberResource\">\n          <data name=\"使用\" type=\"numberResource\" currentValue=\"0\">1</data>\n        </data>\n"
+            }
         }
 
         writeString+="      </data>\n    </data>\n  </data>\n  <chat-palette dicebot=\"Nechronica\">1NC　判定\n1NA　攻撃判定\n\n\nマニューバ/タイミング/コスト/射程/効果\n"
