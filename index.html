@@ -35,7 +35,7 @@
 
     function yomikomi() {
         var date=document.getElementById("nyuryoku").value
-        date=date.replace(/\s/g,"").replace(/、/g,",")
+        date=date.replace(/\s/g,"").replace(/、/g,",").replace(/：/,":")
         var bui=date.match(/\"V_Power_hantei\".*?\]/g)
         bui=bui[0].match(/\d+/g)
 
