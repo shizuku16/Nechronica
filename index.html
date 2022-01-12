@@ -13,99 +13,25 @@
             link.href = URL.createObjectURL(blob);
             link.download = 'キャラコマ.xml';
             link.click();
-        }
-
-        
-    var unicodeUnescape = function(str) {
-        str=str.replace(/\\u/g,"0x")
-        var str2=""
-        for(;str.match(/./);){
-            if(str.match(/^0x/)){
-                var str3=str.match(/0x.{4}/g);
-                str2+=String.fromCharCode(str3[0]);
-                str=str.slice(6);
-            }else{
-                var str3=str.match(/.{1}/g);
-                str2+=str3[0];
-                str=str.slice(1);
-            }
-        }
-        return str2;
-    };        
+        }      
 
     function yomikomi() {
         var date=document.getElementById("nyuryoku").value
-        date=date.replace(/\s/g,"").replace(/、/g,",").replace(/：/g,":")
-        var bui=date.match(/\"V_Power_hantei\".*?\]/g)
-        bui=bui[0].match(/\d+/g)
-
-        var buimei=date.match(/Power_name.*?P/g)
-        buimei=buimei[0].replace(/Power_name\":\[/,"").replace(/\]/,"").replace(/P/,"")
-        buimei=buimei.match(/\".*?,/g)
-        buimei.forEach(function(element,index,array){
-            buimei[index]=buimei[index].replace(/,/g,"").replace(/\"/g,"")
-            buimei[index]=unicodeUnescape(buimei[index])
-                })
-
-        var lost=date.match(/Power_Lost.*?\]/g)
-        lost=lost[0].match(/\d+/g)
-
-        var name=date.match(/pc_name.*?,/g)
-        name=name[0].replace(/pc_name\":\"/,"").replace(/\",/,"")
-        name=unicodeUnescape(name)
-
-        var timing=date.match(/Power_timing.*?V/g)
-        timing=timing[0].match(/\d+/g)
-        timinglist=["オート","アクション","ジャッジ","ダメージ","ラピッド"]
-
-        var cost=date.match(/,\"Power_cost.*?P/g)
-        cost=cost[0].replace(/Power_cost\":\[/,"").replace(/\]/,"").replace(/P/,"")
-        cost=cost.match(/\".*?,/g)
-        cost.forEach(function(element,index,array){
-            cost[index]=cost[index].replace(/,/g,"").replace(/\"/g,"")
-            cost[index]=unicodeUnescape(cost[index])
-                })
-
-        var range=date.match(/Power_range.*?P/g)
-        range=range[0].replace(/Power_range\":\[/,"").replace(/\]/,"").replace(/P/,"")
-        range=range.match(/\".*?,/g)
-        range.forEach(function(element,index,array){
-            range[index]=range[index].replace(/,/g,"").replace(/\"/g,"")
-            range[index]=unicodeUnescape(range[index])
-                })
-
-        var memo=date.match(/Power_memo.*?P/g)
-        memo=memo[0].replace(/Power_memo\":\[/,"").replace(/\]/,"").replace(/P/,"")
-        memo=memo.match(/\".*?,/g)
-        memo.forEach(function(element,index,array){
-            memo[index]=memo[index].replace(/,/g,"").replace(/\"/g,"")
-            memo[index]=unicodeUnescape(memo[index])
-                })
-
-        var kyouki=date.match(/,\"roice_name.*?\"sl/g)
-        kyouki=kyouki[0].replace(/\"roice_name\":\[/,"")
-        kyouki=kyouki.match(/\".*?,/g)
-        kyouki.forEach(function(element,index,array){
-            kyouki[index]=kyouki[index].replace(/,/g,"").replace(/\"/g,"").replace(/]/g,"")
-            kyouki[index]=unicodeUnescape(kyouki[index])
-        })
-
-        var kyoukisuu=date.match(/roice_damage.*?r/g)
-        kyoukisuu=kyoukisuu[0].match(/\".*?,/g)
-        console.log(kyoukisuu)
-        kyoukisuu.forEach(function(element,index,array){
-            kyoukisuu[index]=kyoukisuu[index].replace(/,/g,"").replace(/\"/g,"").replace(/:\[/,"").replace(/\]/,"")
-            kyoukisuu[index]=unicodeUnescape(kyoukisuu[index])
-        })
-
-        var kakerakazu=date.match(/kakera_name.*?kakera_memo/g)
-        kakerakazu=kakerakazu[0].match(/,/g)
-
-        var koudouti=date.match(/Act_Total\":\"\d+/g)
-        koudouti=koudouti[0].match(/\d+/g)
-        koudouti=koudouti[0]
-        console.log(koudouti)
+        var jsondate=JSON.parse(date)
         
+        var bui=jsondate.V_Power_hantei
+        var buimei=jsondate.Power_name
+        var lost=jsondate.Power_Lost
+        var name=jsondate.pc_name
+        var timing=jsondate.Power_timing
+        timinglist=["オート","アクション","ジャッジ","ダメージ","ラピッド"]
+        var cost=jsondate.Power_cost
+        var range=jsondate.Power_range
+        var memo=jsondate.Power_memo
+        var kyouki=jsondate.roice_name
+        var kyoukisuu=jsondate.roice_damage
+        var kakerakazu=jsondate.kakera_name
+        var koudouti=jsondate.Act_Total
 
         var skill=[]
         var atama=[]
@@ -225,7 +151,7 @@
 </head>
 <body>
      キャラクターシートのURLの末尾に.jsを付けて開いたページの内容を、全てコピーして下の欄にペーストしてください。  <br>
-     その後、ボタンをクリックするとxmlファイルをダウンロードします。xmlファイルをユドナリウムにペーストするとキャラコマができます。
+     その後、ボタンをクリックするとxmlファイルをダウンロードします。そのファイルをzipファイルに圧縮するとキャラコマができます。
     <br><textarea id="nyuryoku"  rows="10" cols="30"></textarea>
     <input type="button" onclick="yomikomi()" value="クリック">
 </body>
