@@ -5,17 +5,46 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ネクロニカのキャラコマを作る</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script type="text/javascript" src="sha256.js"></script>
     <script type="text/JavaScript">     
         function download(writeString){
-            let bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-            let blob = new Blob([bom, writeString],{type:"application/xml"});
-            let link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'キャラコマ.xml';
-            link.click();
+            var zip = new JSZip();
+            var image=document.form1.image.files[0]
+            zip.file("test.xml", writeString);
+            zip.file("image.png",image)
+            zip.generateAsync({type:'blob'})
+            .then(function(content) {
+                    //ダウンロード用にリンクを作成する
+                    const download = document.createElement('a');
+                    //リンク先に上記で生成したURLを指定する
+                    download.href = URL.createObjectURL(content);
+                    //download属性にファイル名を指定する
+                    download.download = 'キャラコマ.zip';
+                    //作成したリンクをクリックしてダウンロードを実行する
+                    download.click();
+                    //createObjectURLで作成したオブジェクトURLを開放する
+                    (window.URL || window.webkitURL).revokeObjectURL(url);})
         }      
 
-    function yomikomi() {
+        async function load() {
+            if(document.form1.image.files[0]){
+            var img=document.form1.image
+            console.log(img.files[0])
+            await img.files[0].arrayBuffer().then((arraybuffer) => {
+                const sha = new jsSHA("SHA-256", 'ARRAYBUFFER');
+                sha.update(arraybuffer);
+                const hash = sha.getHash("HEX");
+                console.log(hash)
+                console.log(typeof(hash))
+                return hash
+            })
+            .then((hash)=>yomikomi(hash))
+        }else{yomikomi("")}
+        }
+
+    function yomikomi(image) {
         var date=document.getElementById("nyuryoku").value
         var jsondate=JSON.parse(date)
         
@@ -79,7 +108,7 @@
     
 
 
-        let writeString="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<character>\n  <data name=\"character\">\n    <data name=\"image\">\n      <data type=\"image\" name=\"imageIdentifier\"></data>\n    </data>\n    <data name=\"common\">\n      <data name=\"name\">"+name+"</data>\n      <data name=\"size\">1</data>\n    </data>\n    <data name=\"detail\">\n"
+        let writeString="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<character>\n  <data name=\"character\">\n    <data name=\"image\">\n      <data type=\"image\" name=\"imageIdentifier\">"+image+"</data>\n    </data>\n    <data name=\"common\">\n      <data name=\"name\">"+name+"</data>\n      <data name=\"size\">1</data>\n    </data>\n    <data name=\"detail\">\n"
         writeString+="      <data name=\"リソース\">\n        <data name=\"行動値\">"+koudouti+"</data>\n        <data type=\"numberResource\" currentValue=\"0\" name=\"狂気点回復\">"+kakerakazu.length+"</data>\n"
         writeString+="        <data type=\"numberResource\" currentValue=\"200\" name=\"未練\">200\n"
         for(i=0;i<kyouki.length;i++){
@@ -150,9 +179,14 @@
     </script>
 </head>
 <body>
+    <form name="form1">
      キャラクターシートのURLの末尾に.jsを付けて開いたページの内容を、全てコピーして下の欄にペーストしてください。  <br>
-     その後、ボタンをクリックするとxmlファイルをダウンロードします。そのファイルをzipファイルに圧縮するとキャラコマができます。
-    <br><textarea id="nyuryoku"  rows="10" cols="30"></textarea>
-    <input type="button" onclick="yomikomi()" value="クリック">
+     キャラコマに使用する画像を、「ファイルを選択」ボタンから選択したください。<br>
+     ダウンロードボタンを押すと、キャラコマをダウンロードします。
+    <br><textarea id="nyuryoku"  rows="10" cols="30"></textarea><br><br>
+    キャラコマに使用する画像を選択<br>
+    <input type="file" name="image" accept="image/png,image/jpeg,image/jpg"><br><br>    
+    <input type="button" onclick="load()" value="ダウンロード">
+    </form>
 </body>
 </html>
