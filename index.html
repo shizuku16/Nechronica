@@ -66,6 +66,7 @@
         var bui=jsondate.V_Power_hantei
         var buimei=jsondate.Power_name
         var lost=jsondate.Power_Lost
+        var buikind=jsondate.Power_Type
         var name=jsondate.pc_name
         var timing=jsondate.Power_timing
         timinglist=["オート","アクション","ジャッジ","ダメージ","ラピッド"]
@@ -178,9 +179,9 @@
             }
         }
 
-        writeString+="      </data>\n    </data>\n  </data>\n  <chat-palette dicebot=\"Nechronica\">1NC　判定\n1NA　攻撃判定\n\n\nマニューバ/タイミング/コスト/射程/効果\n"
+        writeString+="      </data>\n    </data>\n  </data>\n  <chat-palette dicebot=\"Nechronica\">1NC　判定\n1NA　攻撃判定\nNM　姉妹への未練表\n\n\nマニューバ/タイミング/コスト/射程/効果\n"
         for(i=0;i<memo.length;i++){
-            if(memo[i].match(/^\d$/)||memo[i].match(/^最大行動値.{2}/)){}else if(memo[i].match(/.+/g)){
+            if(buikind[i]==3||memo[i].match(/^\d$/)||memo[i].match(/^最大行動値.{2}/)){}else if(memo[i].match(/.+/g)){
                 writeString+="\n"+buimei[i]+"/"+timinglist[Number(timing[i])]+"/"+cost[i]+"/"+range[i]+"/"+memo[i]
             }
         }
