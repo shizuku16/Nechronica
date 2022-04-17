@@ -19,10 +19,10 @@
     	fileReader.readAsDataURL(obj.files[0]);
     }
 
-        function download(writeString){
+        function download(date){
             var zip = new JSZip();
             var image=document.form1.image.files[0]
-            zip.file("test.xml", writeString);
+            zip.file("test.xml", date[0]);
             zip.file("image.png",image)
             zip.generateAsync({type:'blob'})
             .then(function(content) {
@@ -31,7 +31,7 @@
                     //リンク先に上記で生成したURLを指定する
                     download.href = URL.createObjectURL(content);
                     //download属性にファイル名を指定する
-                    download.download = 'キャラコマ.zip';
+                    download.download = date[1]+'.zip';
                     //作成したリンクをクリックしてダウンロードを実行する
                     download.click();
                     //createObjectURLで作成したオブジェクトURLを開放する
@@ -67,7 +67,8 @@
         var buimei=jsondate.Power_name
         var lost=jsondate.Power_Lost
         var buikind=jsondate.Power_Type
-        var name=jsondate.pc_name
+        if(jsondate.pc_name) var name=jsondate.pc_name
+        else var name=jsondate.data_title
         var timing=jsondate.Power_timing
         timinglist=["オート","アクション","ジャッジ","ダメージ","ラピッド"]
         var cost=jsondate.Power_cost
@@ -189,7 +190,7 @@
         writeString+="</chat-palette>\n  </character>"
         console.log(writeString)
 
-         download(writeString)
+         download([writeString,name])
 
     })}
 
