@@ -74,6 +74,7 @@
         var memo=jsondate.Power_memo
         var kyouki=jsondate.roice_name
         var kyoukisuu=jsondate.roice_damage
+        var kyoukikind=jsondate.roice_pos
         var kakerakazu=jsondate.kakera_name
         var koudouti=jsondate.Act_Total
 
@@ -128,7 +129,7 @@
         writeString+="        <data type=\"numberResource\" currentValue=\"200\" name=\"未練\">200\n"
         for(i=0;i<kyouki.length;i++){
             if(kyouki[i]===""){}else{
-                writeString+="          <data name=\""+kyouki[i]+"\" type=\"numberResource\" currentValue=\""+kyoukisuu[i]+"\">4</data>\n"
+                writeString+="          <data name=\""+kyouki[i]+"/"+kyoukikind[i]+"\" type=\"numberResource\" currentValue=\""+kyoukisuu[i]+"\">4</data>\n"
             }
         }
         
